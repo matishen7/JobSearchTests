@@ -41,7 +41,6 @@ namespace JobSearchAppBackend.Tests.Services
         [Test]
         public async Task GetAllJobApplicationsAsync_Returns_Mapped_JobApplicationDTOs()
         {
-            // Arrange
             var jobApplications = new List<JobApplication>
             {
                 new JobApplication { JobApplicationId = 1 },
@@ -62,10 +61,8 @@ namespace JobSearchAppBackend.Tests.Services
                 .Setup(mapper => mapper.Map<List<JobApplicationDTO>>(jobApplications))
                 .Returns(jobApplicationDTOs);
 
-            // Act
             var result = await _jobApplicationService.GetAllJobApplicationsAsync();
 
-            // Assert
             Assert.AreEqual(jobApplicationDTOs, result);
             _mockJobApplicationRepository.Verify(repo => repo.GetAllJobApplicationsAsync(), Times.Once);
         }
@@ -73,12 +70,10 @@ namespace JobSearchAppBackend.Tests.Services
         [Test]
         public void GetAllJobApplicationsAsync_Throws_ApplicationException_On_Error()
         {
-            // Arrange
             _mockJobApplicationRepository
                 .Setup(repo => repo.GetAllJobApplicationsAsync())
                 .ThrowsAsync(new Exception("Repository error"));
 
-            // Act & Assert
             var ex = Assert.ThrowsAsync<ApplicationException>(async () => await _jobApplicationService.GetAllJobApplicationsAsync());
             StringAssert.Contains("An error occurred while retrieving job applications", ex.Message);
         }
@@ -90,7 +85,6 @@ namespace JobSearchAppBackend.Tests.Services
         [Test]
         public async Task GetJobApplicationByIdAsync_Returns_Mapped_JobApplicationDTO()
         {
-            // Arrange
             int jobApplicationId = 1;
             var jobApplication = new JobApplication { JobApplicationId = jobApplicationId };
             var jobApplicationDTO = new JobApplicationDTO { JobApplicationId = jobApplicationId };
@@ -103,10 +97,8 @@ namespace JobSearchAppBackend.Tests.Services
                 .Setup(mapper => mapper.Map<JobApplicationDTO>(jobApplication))
                 .Returns(jobApplicationDTO);
 
-            // Act
             var result = await _jobApplicationService.GetJobApplicationByIdAsync(jobApplicationId);
 
-            // Assert
             Assert.AreEqual(jobApplicationDTO, result);
             _mockJobApplicationRepository.Verify(repo => repo.GetJobApplicationByIdAsync(jobApplicationId), Times.Once);
         }
@@ -114,13 +106,11 @@ namespace JobSearchAppBackend.Tests.Services
         [Test]
         public void GetJobApplicationByIdAsync_Throws_ApplicationException_When_NotFound()
         {
-            // Arrange
             int jobApplicationId = 1;
             _mockJobApplicationRepository
                 .Setup(repo => repo.GetJobApplicationByIdAsync(jobApplicationId))
                 .ReturnsAsync((JobApplication)null);
 
-            // Act & Assert
             var ex = Assert.ThrowsAsync<ApplicationException>(async () => await _jobApplicationService.GetJobApplicationByIdAsync(jobApplicationId));
             StringAssert.Contains("An error occurred while retrieving job application", ex.Message);
             Assert.IsInstanceOf<KeyNotFoundException>(ex.InnerException);
@@ -129,13 +119,11 @@ namespace JobSearchAppBackend.Tests.Services
         [Test]
         public void GetJobApplicationByIdAsync_Throws_ApplicationException_On_RepositoryError()
         {
-            // Arrange
             int jobApplicationId = 1;
             _mockJobApplicationRepository
                 .Setup(repo => repo.GetJobApplicationByIdAsync(jobApplicationId))
                 .ThrowsAsync(new Exception("Repository error"));
 
-            // Act & Assert
             var ex = Assert.ThrowsAsync<ApplicationException>(async () => await _jobApplicationService.GetJobApplicationByIdAsync(jobApplicationId));
             StringAssert.Contains("An error occurred while retrieving job application", ex.Message);
         }
@@ -147,7 +135,6 @@ namespace JobSearchAppBackend.Tests.Services
         [Test]
         public async Task AddJobApplicationAsync_Returns_New_JobApplicationId()
         {
-            // Arrange
             var createDto = new JobApplicationCreateDTO { /* set properties as needed */ };
             var jobApplication = new JobApplication { /* set properties accordingly */ };
             int newId = 10;
@@ -160,10 +147,8 @@ namespace JobSearchAppBackend.Tests.Services
                 .Setup(repo => repo.AddJobApplicationAsync(jobApplication))
                 .ReturnsAsync(newId);
 
-            // Act
             var result = await _jobApplicationService.AddJobApplicationAsync(createDto);
 
-            // Assert
             Assert.AreEqual(newId, result);
             _mockJobApplicationRepository.Verify(repo => repo.AddJobApplicationAsync(jobApplication), Times.Once);
         }
@@ -171,7 +156,6 @@ namespace JobSearchAppBackend.Tests.Services
         [Test]
         public void AddJobApplicationAsync_Throws_ApplicationException_When_CreateDto_Is_Null()
         {
-            // Act & Assert
             var ex = Assert.ThrowsAsync<ApplicationException>(async () => await _jobApplicationService.AddJobApplicationAsync(null));
             StringAssert.Contains("An error occurred while adding job application", ex.Message);
             Assert.IsInstanceOf<ArgumentNullException>(ex.InnerException);
@@ -180,7 +164,6 @@ namespace JobSearchAppBackend.Tests.Services
         [Test]
         public void AddJobApplicationAsync_Throws_ApplicationException_On_RepositoryError()
         {
-            // Arrange
             var createDto = new JobApplicationCreateDTO { /* set properties as needed */ };
             var jobApplication = new JobApplication { /* set properties accordingly */ };
 
@@ -192,7 +175,6 @@ namespace JobSearchAppBackend.Tests.Services
                 .Setup(repo => repo.AddJobApplicationAsync(jobApplication))
                 .ThrowsAsync(new Exception("Repository error"));
 
-            // Act & Assert
             var ex = Assert.ThrowsAsync<ApplicationException>(async () => await _jobApplicationService.AddJobApplicationAsync(createDto));
             StringAssert.Contains("An error occurred while adding job application", ex.Message);
         }
@@ -204,7 +186,6 @@ namespace JobSearchAppBackend.Tests.Services
         [Test]
         public async Task UpdateJobApplicationAsync_Calls_Update_On_Repository()
         {
-            // Arrange
             var createDto = new JobApplicationCreateDTO { /* set properties as needed */ };
             var jobApplication = new JobApplication { /* set properties accordingly */ };
 
@@ -216,17 +197,14 @@ namespace JobSearchAppBackend.Tests.Services
                 .Setup(repo => repo.UpdateJobApplicationAsync(jobApplication))
                 .Returns(Task.CompletedTask);
 
-            // Act
             await _jobApplicationService.UpdateJobApplicationAsync(createDto);
 
-            // Assert
             _mockJobApplicationRepository.Verify(repo => repo.UpdateJobApplicationAsync(jobApplication), Times.Once);
         }
 
         [Test]
         public void UpdateJobApplicationAsync_Throws_ApplicationException_When_CreateDto_Is_Null()
         {
-            // Act & Assert
             var ex = Assert.ThrowsAsync<ApplicationException>(async () => await _jobApplicationService.UpdateJobApplicationAsync(null));
             StringAssert.Contains("An error occurred while updating job application", ex.Message);
             Assert.IsInstanceOf<ArgumentNullException>(ex.InnerException);
@@ -235,7 +213,6 @@ namespace JobSearchAppBackend.Tests.Services
         [Test]
         public void UpdateJobApplicationAsync_Throws_ApplicationException_On_RepositoryError()
         {
-            // Arrange
             var createDto = new JobApplicationCreateDTO { /* set properties as needed */ };
             var jobApplication = new JobApplication { /* set properties accordingly */ };
 
@@ -247,7 +224,6 @@ namespace JobSearchAppBackend.Tests.Services
                 .Setup(repo => repo.UpdateJobApplicationAsync(jobApplication))
                 .ThrowsAsync(new Exception("Repository error"));
 
-            // Act & Assert
             var ex = Assert.ThrowsAsync<ApplicationException>(async () => await _jobApplicationService.UpdateJobApplicationAsync(createDto));
             StringAssert.Contains("An error occurred while updating job application", ex.Message);
         }
@@ -259,7 +235,6 @@ namespace JobSearchAppBackend.Tests.Services
         [Test]
         public async Task DeleteJobApplicationAsync_Calls_Delete_On_Repository()
         {
-            // Arrange
             int jobApplicationId = 1;
             var jobApplication = new JobApplication { JobApplicationId = jobApplicationId };
 
@@ -271,23 +246,19 @@ namespace JobSearchAppBackend.Tests.Services
                 .Setup(repo => repo.DeleteJobApplicationAsync(jobApplicationId))
                 .Returns(Task.CompletedTask);
 
-            // Act
             await _jobApplicationService.DeleteJobApplicationAsync(jobApplicationId);
 
-            // Assert
             _mockJobApplicationRepository.Verify(repo => repo.DeleteJobApplicationAsync(jobApplicationId), Times.Once);
         }
 
         [Test]
         public void DeleteJobApplicationAsync_Throws_ApplicationException_When_JobApplication_NotFound()
         {
-            // Arrange
             int jobApplicationId = 1;
             _mockJobApplicationRepository
                 .Setup(repo => repo.GetJobApplicationByIdAsync(jobApplicationId))
                 .ReturnsAsync((JobApplication)null);
 
-            // Act & Assert
             var ex = Assert.ThrowsAsync<ApplicationException>(async () => await _jobApplicationService.DeleteJobApplicationAsync(jobApplicationId));
             StringAssert.Contains("An error occurred while deleting job application", ex.Message);
             Assert.IsInstanceOf<KeyNotFoundException>(ex.InnerException);
@@ -296,7 +267,6 @@ namespace JobSearchAppBackend.Tests.Services
         [Test]
         public void DeleteJobApplicationAsync_Throws_ApplicationException_On_RepositoryError()
         {
-            // Arrange
             int jobApplicationId = 1;
             var jobApplication = new JobApplication { JobApplicationId = jobApplicationId };
 
@@ -308,7 +278,6 @@ namespace JobSearchAppBackend.Tests.Services
                 .Setup(repo => repo.DeleteJobApplicationAsync(jobApplicationId))
                 .ThrowsAsync(new Exception("Repository error"));
 
-            // Act & Assert
             var ex = Assert.ThrowsAsync<ApplicationException>(async () => await _jobApplicationService.DeleteJobApplicationAsync(jobApplicationId));
             StringAssert.Contains("An error occurred while deleting job application", ex.Message);
         }
